@@ -3,6 +3,9 @@ import subprocess
 from flask import Flask, render_template, jsonify, request
 app = Flask(__name__)
 
+venv_python = '/home/bab/Desktop/ali/BABNLU-Services/venv/bin/python'
+args = [venv_python, 'my_script.py', 'arg1', 'arg2', 'arg3']
+subprocess.run(args)
 def execute_command(command):
     try:
         process = subprocess.run(command, shell=True, capture_output=True, text=True)
