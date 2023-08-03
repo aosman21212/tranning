@@ -1,0 +1,26 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Command Output</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <button id="executeButton">Execute Command</button>
+    <pre id="outputContainer"></pre>
+
+    <script>
+        $(document).ready(function() {
+            $("#executeButton").click(function() {
+                $.ajax({
+                    url: "/execute_command",
+                    type: "GET",
+                    success: function(data) {
+                        $("#outputContainer").text(data);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
