@@ -1,23 +1,25 @@
-<!-- templates/index.html -->
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Command Output</title>
+    <title>Spell Checker Model Builder</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <button id="executeButton">Execute Command</button>
-    <pre id="outputContainer"></pre>
+    <h1>Spell Checker Model Builder</h1>
+    <form id="spell_checker_form" method="post">
+        <input type="submit" value="Build Spell Checker Model">
+    </form>
+    <div id="result"></div>
 
     <script>
         $(document).ready(function() {
-            $("#executeButton").click(function() {
-                $.ajax({
-                    url: "/execute_command",
-                    type: "GET",
-                    success: function(data) {
-                        $("#outputContainer").text(data);
-                    }
+            $("#spell_checker_form").submit(function(event) {
+                event.preventDefault();
+                $.post("/build_spell_checker_model", function(data) {
+                    $("#result").text(data);
+                }).fail(function(xhr, status, error) {
+                    var errorMsg = xhr.responseText || "An error occurred while building the spell checker model.";
+                    $("#result").text(errorMsg);
                 });
             });
         });

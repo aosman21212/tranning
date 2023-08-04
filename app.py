@@ -1,33 +1,31 @@
-# app.py
+from flask import Flask, render_template, jsonify
 import subprocess
-from flask import Flask, render_template, jsonify, request
+
 app = Flask(__name__)
 
-venv_python = '/home/bab/Desktop/ali/BABNLU-Services/venv/bin/python'
-args = [venv_python, 'my_script.py', 'arg1', 'arg2', 'arg3']
-subprocess.run(args)
-def execute_command(command):
-    try:
-        process = subprocess.run(command, shell=True, capture_output=True, text=True)
-        if process.returncode == 0:
-            output = process.stdout
-        else:
-            output = f"Error: {process.stderr}"
-    except Exception as e:
-        output = f"Error: {e}"
-    return output
-
-@app.route('/')
+@app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
-@app.route('/execute_command')
-def execute_command_route():
-    model_file = '/home/bab/Desktop/ali/BABNLU-Services/data/bins/spell_checker.pickle'
-    corpus_file = '/home/bab/Desktop'
-    command = f'python3 /home/bab/Desktop/ali/BABNLU-Services/scripts/build_spell_checker.py --model_file "{model_file}" --corpus_files "{corpus_file}"'
-    output = execute_command(command)
-    return jsonify(output)
+@app.route("/build_spell_checker_model", methods=["POST"])
+def build_spell_checker_model():
+    # Replace these with the actual file paths or filenames
+    model_file = "/home/bab/Desktop/mo/model_file/spell_checker.pickle"
+    corpus_file = "/home/bab/Desktop/mo/corpus_files/corpus.txt"
 
-if __name__ == '__main__':
+    # Additional subprocess command
+    venv_python = '//home/bab/Desktop/ali/BABNLU-Services/env/bin/python'
+    script_path = '/home/bab/Desktop/ali/BABNLU-Services/scripts/build_spell_checker.py'
+    args = [venv_python, script_path, '--model_file', model_file, '--corpus_file', corpus_file]
+
+    try:
+        # Execute the command using subprocess
+        result = subprocess.run(args, check=True, capture_output=True, text=True)
+        result_message = result.stdout  # Get the standard output
+    except subprocess.CalledProcessError as e:
+        result_message = f"Error while building the spell checker model: {e.stderr}"
+
+    return jsonify(result_message)
+
+if __name__ == "__main__":
     app.run(debug=True)
